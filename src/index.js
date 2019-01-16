@@ -1,12 +1,57 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+window.state = {
+    todos:
+        [
+            {
+                title: 'First todo',
+                completed: true,
+            },
+            {
+                title: 'Second todo',
+                completed: true,
+            },
+            {
+                title: 'Third',
+                completed: false,
+            }
+        ],
+    showCompletedOnly: false
+};
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+function render(state) {
+    let ul;
+    ul = document.getElementById("list");
+    const root = document.getElementById("root");
+    if (ul) {
+        while (ul.firstChild) {
+            ul.removeChild(ul.firstChild);
+        }
+    } else {
+        ul = document.createElement("ul");
+        ul.id = 'list';
+        root.appendChild(ul);
+    }
+    state.todos.filter(todo => {
+        if (state.showCompletedOnly) {
+            return todo.completed;
+        }
+        return true;
+    }).forEach(todo => {
+        const li = document.createElement("li");
+        const content = document.createTextNode(todo.title);
+        li.appendChild(content);
+        ul.appendChild(li);
+    });
+}
+
+function onToggleFilter() {
+    window.state.showCompletedOnly = !window.state.showCompletedOnly
+    render(window.state);
+}
+
+render(window.state);
+
+const button = document.getElementById("button");
+button.addEventListener('click', onToggleFilter);
+
