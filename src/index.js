@@ -52,6 +52,8 @@ function onToggleFilter() {
 
 render(window.state);
 
+
+
 const button = document.getElementById("button");
 button.addEventListener('click', onToggleFilter);
 
