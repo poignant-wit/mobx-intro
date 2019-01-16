@@ -1,23 +1,21 @@
 import './index.css';
+import {BehaviorSubject, combineLatest} from "rxjs";
 
-window.state = {
-    todos:
-        [
-            {
-                title: 'First todo',
-                completed: true,
-            },
-            {
-                title: 'Second todo',
-                completed: true,
-            },
-            {
-                title: 'Third',
-                completed: false,
-            }
-        ],
-    showCompletedOnly: false
-};
+const todos$ = new BehaviorSubject([
+    {
+        title: 'First todo',
+        completed: true,
+    },
+    {
+        title: 'Second todo',
+        completed: true,
+    },
+    {
+        title: 'Third',
+        completed: false,
+    }
+]);
+const showCompletedOnly$ = new BehaviorSubject(false);
 
 function render(state) {
     let ul;
@@ -46,11 +44,13 @@ function render(state) {
 }
 
 function onToggleFilter() {
-    window.state.showCompletedOnly = !window.state.showCompletedOnly
-    render(window.state);
+    showCompletedOnly$.next(!showCompletedOnly$.value)
 }
 
-render(window.state);
+combineLatest(todos$, showCompletedOnly$, (todos, showCompletedOnly) => ({
+    todos,
+    showCompletedOnly
+})).subscribe(render)
 
 const button = document.getElementById("button");
 button.addEventListener('click', onToggleFilter);
