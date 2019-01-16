@@ -1,21 +1,33 @@
 import './index.css';
-import {BehaviorSubject, combineLatest} from "rxjs";
+import {action, autorun, decorate, observable} from "mobx";
 
-const todos$ = new BehaviorSubject([
-    {
-        title: 'First todo',
-        completed: true,
-    },
-    {
-        title: 'Second todo',
-        completed: true,
-    },
-    {
-        title: 'Third',
-        completed: false,
+
+class State {
+    todos =
+        [
+            {
+                title: 'First todo',
+                completed: true,
+            },
+            {
+                title: 'Second todo',
+                completed: true,
+            },
+            {
+                title: 'Third',
+                completed: false,
+            }
+        ];
+    showCompletedOnly = false;
+
+    toggleFilter() {
+        this.showCompletedOnly = !this.showCompletedOnly;
     }
-]);
-const showCompletedOnly$ = new BehaviorSubject(false);
+}
+
+decorate(State, { showCompletedOnly: observable, toggleFilter: action });
+
+const state = new State();
 
 function render(state) {
     let ul;
@@ -44,13 +56,12 @@ function render(state) {
 }
 
 function onToggleFilter() {
-    showCompletedOnly$.next(!showCompletedOnly$.value)
+    state.toggleFilter();
 }
 
-combineLatest(todos$, showCompletedOnly$, (todos, showCompletedOnly) => ({
-    todos,
-    showCompletedOnly
-})).subscribe(render)
+autorun(() => {
+    render(state);
+});
 
 const button = document.getElementById("button");
 button.addEventListener('click', onToggleFilter);
