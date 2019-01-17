@@ -1,28 +1,33 @@
 import { action, computed, decorate, observable } from "mobx";
+import { Todo } from "./Todo";
 
-class State {
-    todos = [
-        {
-            title: 'First completed',
-            completed: true,
-        },
-        {
-            title: 'Second completed',
-            completed: true,
-        },
-        {
-            title: 'Third in process',
-            completed: false,
-        }
-    ];
+const todos = [
+    {
+        title: 'First completed',
+        completed: true,
+    },
+    {
+        title: 'Second completed',
+        completed: true,
+    },
+    {
+        title: 'Third in process',
+        completed: false,
+    }
+];
+class TodosStore {
     showCompletedOnly = false;
+
+    constructor(todos){
+        this.todos = todos.map(t => new Todo(t));
+    }
 
     toggleFilter() {
         this.showCompletedOnly = !this.showCompletedOnly;
     }
 
     addTodo(todo) {
-        this.todos.push(todo);
+        this.todos.push(new Todo(todo));
     }
 
     get count(){
@@ -39,7 +44,7 @@ class State {
     }
 }
 
-decorate(State, {
+decorate(TodosStore, {
     todos: observable,
     count: computed,
     showCompletedOnly: observable,
@@ -48,5 +53,5 @@ decorate(State, {
     filteredTodos: computed,
 });
 
-export const state = new State();
-window.state = state;
+export const store = new TodosStore(todos);
+window.state = store;

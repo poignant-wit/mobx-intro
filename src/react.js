@@ -29,7 +29,6 @@ function onToggleFilter() {
 }
 
 function onSubmitButton() {
-    console.log('submit');
     const input = document.getElementById("input");
     window.state.addTodo({ title: input.value, completed: false });
 }
