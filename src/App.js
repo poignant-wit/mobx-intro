@@ -1,28 +1,25 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { observer } from "mobx-react";
+import { state } from "./Store";
 
 class App extends Component {
+
+  store  = state;
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+        <React.Fragment>
+            <h5>React completed</h5>
+            <h5>{state.count}</h5>
+        <ul>
+            {this.store.filteredTodos.map(todo => {
+                return <li key={todo.title}>{todo.title}</li>
+            })}
+        </ul>
+        </React.Fragment>
     );
   }
 }
 
-export default App;
+export default observer(App);
